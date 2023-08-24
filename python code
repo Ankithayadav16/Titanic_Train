@@ -1,0 +1,263 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+df=pd.read_csv("C:/Users/DELL/Downloads/titanic-train.csv.csv")
+df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 891 entries, 0 to 890
+Data columns (total 12 columns):
+PassengerId    891 non-null int64
+Survived       891 non-null int64
+Pclass         891 non-null int64
+Name           891 non-null object
+Sex            891 non-null object
+Age            714 non-null float64
+SibSp          891 non-null int64
+Parch          891 non-null int64
+Ticket         891 non-null object
+Fare           891 non-null float64
+Cabin          204 non-null object
+Embarked       889 non-null object
+dtypes: float64(2), int64(5), object(5)
+memory usage: 83.7+ KB
+df.head()
+PassengerId	Survived	Pclass	Name	Sex	Age	SibSp	Parch	Ticket	Fare	Cabin	Embarked
+0	1	0	3	Braund, Mr. Owen Harris	male	22.0	1	0	A/5 21171	7.2500	NaN	S
+1	2	1	1	Cumings, Mrs. John Bradley (Florence Briggs Th...	female	38.0	1	0	PC 17599	71.2833	C85	C
+2	3	1	3	Heikkinen, Miss. Laina	female	26.0	0	0	STON/O2. 3101282	7.9250	NaN	S
+3	4	1	1	Futrelle, Mrs. Jacques Heath (Lily May Peel)	female	35.0	1	0	113803	53.1000	C123	S
+4	5	0	3	Allen, Mr. William Henry	male	35.0	0	0	373450	8.0500	NaN	S
+df.describe()
+PassengerId	Survived	Pclass	Age	SibSp	Parch	Fare
+count	891.000000	891.000000	891.000000	714.000000	891.000000	891.000000	891.000000
+mean	446.000000	0.383838	2.308642	29.699118	0.523008	0.381594	32.204208
+std	257.353842	0.486592	0.836071	14.526497	1.102743	0.806057	49.693429
+min	1.000000	0.000000	1.000000	0.420000	0.000000	0.000000	0.000000
+25%	223.500000	0.000000	2.000000	20.125000	0.000000	0.000000	7.910400
+50%	446.000000	0.000000	3.000000	28.000000	0.000000	0.000000	14.454200
+75%	668.500000	1.000000	3.000000	38.000000	1.000000	0.000000	31.000000
+max	891.000000	1.000000	3.000000	80.000000	8.000000	6.000000	512.329200
+df.isnull()
+PassengerId	Survived	Pclass	Name	Sex	Age	SibSp	Parch	Ticket	Fare	Cabin	Embarked
+0	False	False	False	False	False	False	False	False	False	False	True	False
+1	False	False	False	False	False	False	False	False	False	False	False	False
+2	False	False	False	False	False	False	False	False	False	False	True	False
+3	False	False	False	False	False	False	False	False	False	False	False	False
+4	False	False	False	False	False	False	False	False	False	False	True	False
+...	...	...	...	...	...	...	...	...	...	...	...	...
+886	False	False	False	False	False	False	False	False	False	False	True	False
+887	False	False	False	False	False	False	False	False	False	False	False	False
+888	False	False	False	False	False	True	False	False	False	False	True	False
+889	False	False	False	False	False	False	False	False	False	False	False	False
+890	False	False	False	False	False	False	False	False	False	False	True	False
+891 rows × 12 columns
+
+;
+sns.heatmap(df.isnull(),yticklabels =False,cbar =False,cmap ='viridis');
+
+sns.countplot(x = 'Survived',data = df )
+<matplotlib.axes._subplots.AxesSubplot at 0x55ef848>
+
+df
+plt.figure(figsize = (10,7))
+sns.boxplot(x = 'Pclass' , y = 'Age' ,data = df)
+<matplotlib.axes._subplots.AxesSubplot at 0xb446448>
+
+# Replace nulls with avg age values in beolow function
+def impute_age(cols):
+    Age = cols[0]
+    Pclass = cols[1]
+    
+    if pd.isnull(Age):
+        if Pclass == 1:
+            return 37
+        elif Pclass == 2:
+            return 28
+        else:
+            return 25
+    else:
+        return Age 
+        
+df['Age'] = df[['Age','Pclass']].apply(impute_age,axis = 1)
+sns.heatmap(df.isnull(),yticklabels =False,cbar =False,cmap='viridis')
+<matplotlib.axes._subplots.AxesSubplot at 0xbb69d88>
+
+df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 891 entries, 0 to 890
+Data columns (total 12 columns):
+PassengerId    891 non-null int64
+Survived       891 non-null int64
+Pclass         891 non-null int64
+Name           891 non-null object
+Sex            891 non-null object
+Age            891 non-null float64
+SibSp          891 non-null int64
+Parch          891 non-null int64
+Ticket         891 non-null object
+Fare           891 non-null float64
+Cabin          204 non-null object
+Embarked       889 non-null object
+dtypes: float64(2), int64(5), object(5)
+memory usage: 83.7+ KB
+df.drop('Cabin',axis = 1,inplace = True)
+---------------------------------------------------------------------------
+KeyError                                  Traceback (most recent call last)
+<ipython-input-33-895f91e49712> in <module>
+----> 1 df.drop('Cabin',axis = 1,inplace = True)
+
+C:\ProgramData\Anaconda3\lib\site-packages\pandas\core\frame.py in drop(self, labels, axis, index, columns, level, inplace, errors)
+   4100             level=level,
+   4101             inplace=inplace,
+-> 4102             errors=errors,
+   4103         )
+   4104 
+
+C:\ProgramData\Anaconda3\lib\site-packages\pandas\core\generic.py in drop(self, labels, axis, index, columns, level, inplace, errors)
+   3912         for axis, labels in axes.items():
+   3913             if labels is not None:
+-> 3914                 obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+   3915 
+   3916         if inplace:
+
+C:\ProgramData\Anaconda3\lib\site-packages\pandas\core\generic.py in _drop_axis(self, labels, axis, level, errors)
+   3944                 new_axis = axis.drop(labels, level=level, errors=errors)
+   3945             else:
+-> 3946                 new_axis = axis.drop(labels, errors=errors)
+   3947             result = self.reindex(**{axis_name: new_axis})
+   3948 
+
+C:\ProgramData\Anaconda3\lib\site-packages\pandas\core\indexes\base.py in drop(self, labels, errors)
+   5338         if mask.any():
+   5339             if errors != "ignore":
+-> 5340                 raise KeyError("{} not found in axis".format(labels[mask]))
+   5341             indexer = indexer[~mask]
+   5342         return self.delete(indexer)
+
+KeyError: "['Cabin'] not found in axis"
+
+df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 891 entries, 0 to 890
+Data columns (total 11 columns):
+PassengerId    891 non-null int64
+Survived       891 non-null int64
+Pclass         891 non-null int64
+Name           891 non-null object
+Sex            891 non-null object
+Age            891 non-null float64
+SibSp          891 non-null int64
+Parch          891 non-null int64
+Ticket         891 non-null object
+Fare           891 non-null float64
+Embarked       889 non-null object
+dtypes: float64(2), int64(5), object(4)
+memory usage: 76.7+ KB
+df.head()
+PassengerId	Survived	Pclass	Name	Sex	Age	SibSp	Parch	Ticket	Fare	Embarked
+0	1	0	3	Braund, Mr. Owen Harris	male	22.0	1	0	A/5 21171	7.2500	S
+1	2	1	1	Cumings, Mrs. John Bradley (Florence Briggs Th...	female	38.0	1	0	PC 17599	71.2833	C
+2	3	1	3	Heikkinen, Miss. Laina	female	26.0	0	0	STON/O2. 3101282	7.9250	S
+3	4	1	1	Futrelle, Mrs. Jacques Heath (Lily May Peel)	female	35.0	1	0	113803	53.1000	S
+4	5	0	3	Allen, Mr. William Henry	male	35.0	0	0	373450	8.0500	S
+df
+embark = pd.get_dummies(df['Embarked'])
+embark
+C	Q	S
+0	0	0	1
+1	1	0	0
+2	0	0	1
+3	0	0	1
+4	0	0	1
+...	...	...	...
+886	0	0	1
+887	0	0	1
+888	0	0	1
+889	1	0	0
+890	0	1	0
+891 rows × 3 columns
+
+gender = pd.get_dummies(df['Sex'],drop_first =True)
+gender
+male
+0	1
+1	0
+2	0
+3	0
+4	1
+...	...
+886	1
+887	0
+888	0
+889	1
+890	1
+891 rows × 1 columns
+
+df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 891 entries, 0 to 890
+Data columns (total 11 columns):
+PassengerId    891 non-null int64
+Survived       891 non-null int64
+Pclass         891 non-null int64
+Name           891 non-null object
+Sex            891 non-null object
+Age            891 non-null float64
+SibSp          891 non-null int64
+Parch          891 non-null int64
+Ticket         891 non-null object
+Fare           891 non-null float64
+Embarked       889 non-null object
+dtypes: float64(2), int64(5), object(4)
+memory usage: 76.7+ KB
+df = pd.concat([df,gender,embark],axis =1)
+df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 891 entries, 0 to 890
+Data columns (total 19 columns):
+PassengerId    891 non-null int64
+Survived       891 non-null int64
+Pclass         891 non-null int64
+Name           891 non-null object
+Sex            891 non-null object
+Age            891 non-null float64
+SibSp          891 non-null int64
+Parch          891 non-null int64
+Ticket         891 non-null object
+Fare           891 non-null float64
+Embarked       889 non-null object
+male           891 non-null uint8
+C              891 non-null uint8
+Q              891 non-null uint8
+S              891 non-null uint8
+male           891 non-null uint8
+C              891 non-null uint8
+Q              891 non-null uint8
+S              891 non-null uint8
+dtypes: float64(2), int64(5), object(4), uint8(8)
+memory usage: 83.7+ KB
+df.drop(['Embarked','Sex','Name','Ticket'],axis = 1,inplace = True)
+df.info()
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 891 entries, 0 to 890
+Data columns (total 15 columns):
+PassengerId    891 non-null int64
+Survived       891 non-null int64
+Pclass         891 non-null int64
+Age            891 non-null float64
+SibSp          891 non-null int64
+Parch          891 non-null int64
+Fare           891 non-null float64
+male           891 non-null uint8
+C              891 non-null uint8
+Q              891 non-null uint8
+S              891 non-null uint8
+male           891 non-null uint8
+C              891 non-null uint8
+Q              891 non-null uint8
+S              891 non-null uint8
+dtypes: float64(2), int64(5), uint8(8)
+memory usage: 55.8 KB
+​
+​
